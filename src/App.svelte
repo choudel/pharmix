@@ -1,23 +1,37 @@
 <script lang="ts">
-  import Counter from './lib/Counter.svelte'
-  import { invoke } from '@tauri-apps/api/tauri'
-  async function getMessage(){
-    const res = await invoke('my_full_send_command')
-    return res
+  import Counter from "./lib/Counter.svelte";
+  import { createClient, setContextClient } from "@urql/svelte";
+  import { queryStore, gql, getContextClient } from '@urql/svelte';
+
+  import { invoke } from "@tauri-apps/api/tauri";
+  import { invokeExchange } from "tauri-plugin-graphql-urql";
+
+  async function getMessage() {
+    const res = await invoke("my_custom_command", {
+      number: 12,
+    });
+    return res;
   }
-  let promise = getMessage()
-  invoke('custom', { runMessage: 'Hello!' })
- 
-  
-  
+  let promise = getMessage();
+
+  const client = createClient({
+    url: "graphql",
+  });
+  setContextClient(client);
+  const todos = queryStore({
+    client: getContextClient(),
+    query: gql`
+      query {
+        todos {
+          id
+          title
+        }
+      }
+    `,
+  });
 </script>
 
 <main>
-  <div>
-    {#await promise then value}
-    <h1>{value}</h1>
-    {/await}
-  </div>
   <h1>Vite + Svelte</h1>
 
   <div class="card">
@@ -25,12 +39,12 @@
   </div>
 
   <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank">SvelteKit</a>, the official Svelte app framework powered by Vite!
+    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank"
+      >SvelteKit</a
+    >, the official Svelte app framework powered by Vite!
   </p>
 
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
+  <p class="read-the-docs">Click on the Vite and Svelte logos to learn more</p>
 </main>
 
 <style>
