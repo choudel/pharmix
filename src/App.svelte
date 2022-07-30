@@ -16,22 +16,35 @@
 
   const client = createClient({
     url: "graphql",
+    exchanges: [
+    invokeExchange]
   });
   setContextClient(client);
   const todos = queryStore({
     client: getContextClient(),
     query: gql`
       query {
-        todos {
-          id
-          title
-        }
+       posts{
+              id
+            title
+            }
       }
     `,
   });
 </script>
 
 <main>
+  {#if $todos.fetching}
+<p>Loading...</p>
+{:else if $todos.error}
+<p>Oh no... {$todos.error.message}</p>
+{:else}
+<ul>
+  {#each $todos.data.post as todo}
+  <li>{todo.id}</li>
+  {/each}
+</ul>
+{/if}
   <h1>Vite + Svelte</h1>
 
   <div class="card">

@@ -23,6 +23,7 @@ diesel = {version = "1.4.8", features = ["sqlite"] }
 tauri-plugin-graphql = "0.2"
 juniper = "0.15.9"
 dotenv = "0.15.0"
+rand = "0.8.4"
 
 [features]
 # by default Tauri runs in production mode
