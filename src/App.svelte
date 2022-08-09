@@ -1,7 +1,7 @@
 <script lang="ts">
   import Counter from "./lib/Counter.svelte";
   import { createClient, setContextClient } from "@urql/svelte";
-  import { queryStore, gql, getContextClient } from '@urql/svelte';
+  import { queryStore, gql, getContextClient } from "@urql/svelte";
 
   import { invoke } from "@tauri-apps/api/tauri";
   import { invokeExchange } from "tauri-plugin-graphql-urql";
@@ -16,18 +16,17 @@
 
   const client = createClient({
     url: "graphql",
-    exchanges: [
-    invokeExchange]
+    exchanges: [invokeExchange],
   });
   setContextClient(client);
   const todos = queryStore({
     client: getContextClient(),
     query: gql`
       query {
-       posts{
-              id
-            title
-            }
+        list {
+          id
+          text
+        }
       }
     `,
   });
@@ -35,16 +34,20 @@
 
 <main>
   {#if $todos.fetching}
-<p>Loading...</p>
-{:else if $todos.error}
-<p>Oh no... {$todos.error.message}</p>
-{:else}
-<ul>
-  {#each $todos.data.post as todo}
-  <li>{todo.id}</li>
-  {/each}
-</ul>
-{/if}
+    <p>Loading...</p>
+  {:else if $todos.error}
+    <p>Oh no... {$todos.error.message}</p>
+  {:else}
+    <ul>
+      {#each $todos.data.list as todo}
+        <li>{todo.id}</li>
+        <li>{todo.text}</li>
+        <li>{todo.title}</li>
+        <li>{todo.body}</li>
+        <li>{todo.published}</li>
+      {/each}
+    </ul>
+  {/if}
   <h1>Vite + Svelte</h1>
 
   <div class="card">

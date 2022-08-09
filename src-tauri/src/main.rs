@@ -2,7 +2,7 @@
   all(not(debug_assertions), target_os = "windows"),
   windows_subsystem = "windows"
 )]
-use rand::prelude::*;
+
 use juniper::{graphql_object, EmptySubscription, EmptyMutation, FieldResult, GraphQLObject, RootNode};
 use tauri_plugin_graphql::Context as GraphQLContext;
 #[derive(GraphQLObject, Debug, Clone)]
@@ -17,7 +17,6 @@ impl Post {
         Self {
             id: rand::random::<i32>(),
             text,
-            
         }
     }
 }
@@ -31,21 +30,20 @@ impl Query {
             Post::new("foo".to_string()),
             Post::new("bar".to_string())
         ];
-
         Ok(item)
     }
 }
 
-// Consumers of this schema can only read data, so we must specifcy `EmptyMutation` and `EmptySubscription`
+
+
 type Schema = RootNode<'static, Query, EmptyMutation<GraphQLContext>, EmptySubscription<GraphQLContext>>;
 
 fn main() {
-    let schema = Schema::new(
-        Query,
-        EmptyMutation::<GraphQLContext>::new(),
-        EmptySubscription::<GraphQLContext>::new(),
-    );
-
+  let schema = Schema::new(
+    Query,
+    EmptyMutation::<GraphQLContext>::new(),
+    EmptySubscription::<GraphQLContext>::new(),
+);
     tauri::Builder::default()
         .plugin(tauri_plugin_graphql::init(schema))
         .run(tauri::generate_context!())
