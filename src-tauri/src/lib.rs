@@ -9,7 +9,7 @@ use diesel::prelude::*;
 use dotenv::dotenv;
 use std::env;
 
-use self::models::{Post,NewPost};
+use self::models::{NewPost};
 
 pub fn establish_connection() -> SqliteConnection {
     dotenv().ok();

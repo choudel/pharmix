@@ -26,6 +26,8 @@
         list {
           id
           text
+          title
+          body
         }
       }
     `,
@@ -44,7 +46,6 @@
         <li>{todo.text}</li>
         <li>{todo.title}</li>
         <li>{todo.body}</li>
-        <li>{todo.published}</li>
       {/each}
     </ul>
   {/if}

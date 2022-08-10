@@ -1,4 +1,3 @@
-use diesel::prelude::*;
 use super::schema::posts;
 use serde::{Deserialize, Serialize};
 
