@@ -22,16 +22,18 @@
   const todos = queryStore({
     client: getContextClient(),
     query: gql`
-      query {
+      query{
         list {
+                    
           id
-          text
           title
           body
+          
         }
       }
     `,
   });
+  console.log(todos);
 </script>
 
 <main>
@@ -41,12 +43,11 @@
     <p>Oh no... {$todos.error.message}</p>
   {:else}
     <ul>
-      {#each $todos.data.list as todo}
-        <li>{todo.id}</li>
-        <li>{todo.text}</li>
-        <li>{todo.title}</li>
-        <li>{todo.body}</li>
-      {/each}
+     
+        <li>{$todos.data.list.id}</li>
+        <li>{$todos.data.list.title}</li>
+        <li>{$todos.data.list.body}</li>
+     
     </ul>
   {/if}
   <h1>Vite + Svelte</h1>
