@@ -1,7 +1,14 @@
 extern crate diesel;
-use app::{*, models::Post};
-use diesel::prelude::*;
-use juniper::{graphql_object, EmptySubscription, EmptyMutation, FieldResult, GraphQLObject, RootNode};
+extern crate dotenv;
+
+use app::models;
+use diesel::{Connection, SqliteConnection};
+use dotenv::dotenv;
+use std::env;
+
+use juniper::{
+    graphql_object, EmptyMutation, EmptySubscription, FieldResult, GraphQLObject, RootNode,
+};
 use tauri_plugin_graphql::Context as GraphQLContext;
 
 #[derive(GraphQLObject, Debug, Clone)]
@@ -14,18 +21,16 @@ struct ListItem {
 
 impl ListItem {
     pub fn new() -> Self {
-        use schema::posts::dsl::*;
-        let connection = establish_connection();
-        let results = posts
-            .filter(published.eq(true))
-            .limit(1)
-            .load::<Post>(&connection)
-            .expect("Error loading posts");
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+        let conn = SqliteConnection::establish(&database_url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+        let results = models::Post::all(&conn);
         Self {
-            id:results[0].id,
-            title:results[0].title.to_string(),
-            body:results[0].body.to_string(),
-            published:results[0].published,
+            id: results[0].id,
+            title: results[0].title.to_string(),
+            body: results[0].body.to_string(),
+            published: results[0].published,
         }
     }
 }
@@ -35,23 +40,19 @@ pub struct QueryRoot;
 #[graphql_object(context = GraphQLContext)]
 impl QueryRoot {
     async fn list() -> FieldResult<ListItem> {
-        use schema::posts::dsl::*;
-        let connection = establish_connection();
-        let results = posts
-            .filter(published.eq(true))
-            .limit(1)
-            .load::<Post>(&connection)
-            .expect("Error loading posts");
-        Ok(ListItem{
-            id:results[0].id.to_owned(),
-            title:results[0].title.to_string().to_owned(),
-            body:results[0].body.to_string().to_owned(),
-            published:results[0].published.to_owned(),
-
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+        let conn = SqliteConnection::establish(&database_url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+        let results = models::Post::all(&conn);
+        Ok(ListItem {
+            id: results[0].id.to_owned(),
+            title: results[0].title.to_string().to_owned(),
+            body: results[0].body.to_string().to_owned(),
+            published: results[0].published.to_owned(),
         })
-    
     }
 }
 
-
-pub(crate) type Schema = RootNode<'static, QueryRoot, EmptyMutation<GraphQLContext>, EmptySubscription<GraphQLContext>>;
+pub(crate) type Schema =
+    RootNode<'static, QueryRoot, EmptyMutation<GraphQLContext>, EmptySubscription<GraphQLContext>>;
