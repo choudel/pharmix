@@ -2,7 +2,7 @@
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]
-use crate::schemaql::QueryRoot;
+use crate::schemaql::Query;
 use schemaql::Schema;
 use tauri_plugin_graphql::Context as GraphQLContext;
 use juniper::{EmptySubscription, EmptyMutation};
@@ -11,7 +11,7 @@ pub mod schemaql;
 
 fn main() {
     let schema = Schema::new(
-        QueryRoot,
+        Query,
         EmptyMutation::<GraphQLContext>::new(),
         EmptySubscription::<GraphQLContext>::new(),
     );

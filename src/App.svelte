@@ -5,6 +5,7 @@
 
   import { invoke } from "@tauri-apps/api/tauri";
   import { invokeExchange } from "tauri-plugin-graphql-urql";
+  import { isListType } from "graphql";
 
   async function getMessage() {
     const res = await invoke("my_custom_command", {
@@ -22,18 +23,18 @@
   const todos = queryStore({
     client: getContextClient(),
     query: gql`
-      query{
-        list {
-                    
-          id
-          title
-          body
+      query {
+        list{ 
           
-        }
+            id
+            title
+            body
+                    
+        }      
       }
     `,
   });
-  console.log(todos);
+  console.log($todos.data)
 </script>
 
 <main>
@@ -43,11 +44,10 @@
     <p>Oh no... {$todos.error.message}</p>
   {:else}
     <ul>
-     
-        <li>{$todos.data.list.id}</li>
-        <li>{$todos.data.list.title}</li>
-        <li>{$todos.data.list.body}</li>
-     
+      {#each $todos.data.list as todo}
+        <li>{todo.title}</li>
+        <li>{todo.body}</li>
+      {/each}
     </ul>
   {/if}
   <h1>Vite + Svelte</h1>

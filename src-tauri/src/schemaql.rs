@@ -20,39 +20,33 @@ struct ListItem {
 }
 
 impl ListItem {
-    pub fn new() -> Self {
+    pub fn new(id:i32) -> Self {
         dotenv().ok();
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
         let conn = SqliteConnection::establish(&database_url)
             .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
-        let results = models::Post::all(&conn);
+        let result =models::Post::show(id, &conn);
         Self {
-            id: results[0].id,
-            title: results[0].title.to_string(),
-            body: results[0].body.to_string(),
-            published: results[0].published,
+            id,
+            title: result[0].title.to_string().to_owned(),
+            body: result[0].body.to_string().to_owned(),
+            published: result[0].published.to_owned()
         }
     }
 }
-
-pub struct QueryRoot;
+    
+pub struct Query;
 
 #[graphql_object(context = GraphQLContext)]
-impl QueryRoot {
-    async fn list() -> FieldResult<ListItem> {
-        dotenv().ok();
-        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-        let conn = SqliteConnection::establish(&database_url)
-            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
-        let results = models::Post::all(&conn);
-        Ok(ListItem {
-            id: results[0].id.to_owned(),
-            title: results[0].title.to_string().to_owned(),
-            body: results[0].body.to_string().to_owned(),
-            published: results[0].published.to_owned(),
-        })
+impl Query {
+    async fn list() -> FieldResult<Vec<ListItem>> {
+        let item = vec![
+            ListItem::new(2),
+            ListItem::new(3)
+        ]; 
+        Ok(item)
     }
 }
 
 pub(crate) type Schema =
-    RootNode<'static, QueryRoot, EmptyMutation<GraphQLContext>, EmptySubscription<GraphQLContext>>;
+    RootNode<'static, Query, EmptyMutation<GraphQLContext>, EmptySubscription<GraphQLContext>>;
