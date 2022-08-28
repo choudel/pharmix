@@ -5,7 +5,7 @@
 
   import { invoke } from "@tauri-apps/api/tauri";
   import { invokeExchange } from "tauri-plugin-graphql-urql";
-  import { isListType } from "graphql";
+  
 
   async function getMessage() {
     const res = await invoke("my_custom_command", {
@@ -30,11 +30,16 @@
             title
             body
                     
-        }      
+        } 
+        drugs{
+          id
+          dci
+          description
+        }     
       }
     `,
   });
-  console.log($todos.data)
+
 </script>
 
 <main>
@@ -47,6 +52,10 @@
       {#each $todos.data.list as todo}
         <li>{todo.title}</li>
         <li>{todo.body}</li>
+      {/each}
+      {#each $todos.data.drugs as todo}
+        <li>{todo.dci}</li>
+        <li>{todo.description}</li>
       {/each}
     </ul>
   {/if}
