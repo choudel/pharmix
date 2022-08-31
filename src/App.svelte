@@ -36,7 +36,7 @@
           dci
           description
         } 
-        drug(id:1){
+        drug(id:2){
         dci
         }    
       }
