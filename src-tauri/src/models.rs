@@ -1,5 +1,6 @@
 use diesel;
 use diesel::prelude::*;
+use juniper::GraphQLObject;
 
 use crate::schema::posts;
 use crate::schema::posts::dsl::posts as all_posts;
@@ -26,7 +27,7 @@ impl Post {
         .expect("Error loading the books")
     }
 }
-#[derive(Queryable)]
+#[derive(Queryable,GraphQLObject, Debug, Clone)]
 pub struct Drug {
     pub id: i32,
     pub dci: String,

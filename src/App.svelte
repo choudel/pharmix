@@ -35,7 +35,10 @@
           id
           dci
           description
-        }     
+        } 
+        drug(id:1){
+        dci
+        }    
       }
     `,
   });
@@ -48,6 +51,7 @@
   {:else if $todos.error}
     <p>Oh no... {$todos.error.message}</p>
   {:else}
+  <h1>{$todos.data.drug[0].dci}</h1>
     <ul>
       {#each $todos.data.list as todo}
         <li>{todo.title}</li>

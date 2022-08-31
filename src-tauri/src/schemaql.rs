@@ -1,7 +1,7 @@
 extern crate diesel;
 extern crate dotenv;
 
-use app::models;
+use app::models::{Drug, self};
 use diesel::{Connection, SqliteConnection};
 use dotenv::dotenv;
 use std::env;
@@ -67,11 +67,20 @@ impl Query {
         ]; 
         Ok(item)
     }
-    async fn drugs()-> FieldResult<Vec<ListDrugs>>{
-        let drug=vec![
-            ListDrugs::new(1),
-            ListDrugs::new(2)
-        ];
+    async fn drugs()-> FieldResult<Vec<Drug>>{
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+        let conn = SqliteConnection::establish(&database_url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+        let drug = models::Drug::all(&conn);
+        Ok(drug)
+    }
+    async fn drug(id:i32)->FieldResult<Vec<Drug>>{
+        dotenv().ok();
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+        let conn = SqliteConnection::establish(&database_url)
+            .unwrap_or_else(|_| panic!("Error connecting to {}", database_url));
+        let drug = models::Drug::show(id,&conn);
         Ok(drug)
     }
 }
