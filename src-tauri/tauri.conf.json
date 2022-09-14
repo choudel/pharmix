@@ -30,7 +30,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.choudel.so",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
