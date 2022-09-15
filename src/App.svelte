@@ -24,21 +24,12 @@
     client: getContextClient(),
     query: gql`
       query {
-        list{ 
-          
-            id
-            title
-            body
-                    
-        } 
         drugs{
           id
           dci
           description
         } 
-        drug(id:2){
-        dci
-        }    
+            
       }
     `,
   });
@@ -51,12 +42,7 @@
   {:else if $todos.error}
     <p>Oh no... {$todos.error.message}</p>
   {:else}
-  <h1>{$todos.data.drug[0].dci}</h1>
     <ul>
-      {#each $todos.data.list as todo}
-        <li>{todo.title}</li>
-        <li>{todo.body}</li>
-      {/each}
       {#each $todos.data.drugs as todo}
         <li>{todo.dci}</li>
         <li>{todo.description}</li>

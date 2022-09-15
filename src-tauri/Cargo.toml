@@ -24,6 +24,7 @@ tauri-plugin-graphql = "0.2"
 juniper = "0.15.9"
 dotenv = "0.15.0"
 rand = "0.8.4"
+diesel_migrations = "1.4.0"
 
 [features]
 # by default Tauri runs in production mode

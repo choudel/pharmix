@@ -1,4 +1,6 @@
-table! {
+// @generated automatically by Diesel CLI.
+
+diesel::table! {
     drugs (id) {
         id -> Integer,
         dci -> Text,
@@ -6,7 +8,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     posts (id) {
         id -> Integer,
         title -> Text,
@@ -15,7 +17,7 @@ table! {
     }
 }
 
-allow_tables_to_appear_in_same_query!(
+diesel::allow_tables_to_appear_in_same_query!(
     drugs,
     posts,
 );

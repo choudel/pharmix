@@ -1,0 +1,6 @@
+DELETE FROM drugs
+WHERE id = 7;
+DELETE FROM drugs
+WHERE id = 8;
+DELETE FROM drugs
+WHERE id = 9;
